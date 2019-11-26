@@ -1,0 +1,28 @@
+create(d1:doctor{name:"deepak verma"}),
+    (d2:doctor{name:"rajiv bhatia"}),
+    (s1:specialization{name:"gynaec"}),
+    (s2:specialization{name:"orthopedic"}),
+    (s3:specialization{name:"pediatric"}),
+    (h1:hospital{name:"verma hospital"}),
+    (h2:hospital{name:"jehangir hospital"}),
+    (p1:person{name:"raju sharma"}),
+    (p2:person{name:"rajiv shukla"}),
+    (p3:person{name:"amitabh bachan"})
+
+create (h1)-[:specialist]->(s1),
+        (h2)-[:specialist]->(s1),
+        (h2)-[:specialist]->(s2),
+        (h1)-[:specialist]->(s3),
+        (p1)-[:reviwed{rated:"3.5"}]->(h2),
+        (p2)-[:reviwed{rated:"4"}]->(h1),
+        (p3)-[:reviwed{rated:"3"}]->(h2),
+        (p2)-[:reviwed{rated:"3.5"}]->(h2),
+        (d1)-[:visits{day:"monday"}]->(h1),
+        (d1)-[:visits{day:"tuesday"}]->(h2),
+        (d2)-[:visits{day:"friday"}]->(h1),
+        (d2)-[:visits{day:"saturday"}]->(h2) return d1,d2,s1,s2,s3,h1,h2,p1,p2,p3
+
+A: match(h:hospital)-[:specialist]->(s:specialization) where s.name="pediatric" return h
+B: match(d:doctor)-[v:visits]->(h:hospital) where v.day="monday" return d
+C: match(p:person)-[r:reviwed]->(h:hospital)-[:specialist]->(s:specialization) where s.name="gynaec" return h, count(r)
+D: match(p:person)-[r:reviwed]->(h:hospital) where r.rated >="3" and h.name="jehangir hospital" return p
